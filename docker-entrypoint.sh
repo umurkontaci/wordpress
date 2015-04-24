@@ -70,6 +70,12 @@ if (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROT
 	$_SERVER['HTTPS'] = 'on';
 }
 
+// Quick workaround to fix HTTP HOST value if Apache is running behind a reverse proxy
+// You need to strip & set X-Forwarded-Host to actual Host value.
+if (isset($_SERVER['HTTP_X_FORWARDED_HOST'])) {
+	$_SERVER['HTTP_HOST'] = $_SERVER['HTTP_X_FORWARDED_HOST'];
+}
+
 EOPHP
 	chown www-data:www-data wp-config.php
 fi

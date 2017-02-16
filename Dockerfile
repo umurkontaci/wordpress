@@ -42,5 +42,12 @@ RUN set -ex; \
 
 COPY docker-entrypoint.sh /usr/local/bin/
 
-ENTRYPOINT ["docker-entrypoint.sh"]
+RUN apt-get update && apt-get install -y wget
+
+ENV DOCKERIZE_VERSION v0.3.0
+RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
+    && tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
+    && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
+
+ENTRYPOINT ["dockerize", "-wait", "tcp://mysql:3306", "docker-entrypoint.sh"]
 CMD ["apache2-foreground"]
